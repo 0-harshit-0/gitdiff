@@ -7,8 +7,14 @@ import (
 	"strings"
 )
 
-func diffOutput() []byte {
-	cmd := exec.Command("git", "diff")
+func diffOutput(staged bool) []byte {
+	var cmd *exec.Cmd
+
+	if staged {
+		cmd = exec.Command("git", "diff", "--staged")
+	} else {
+		cmd = exec.Command("git", "diff")
+	}
 
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -23,8 +29,8 @@ type File struct {
 	Data []string
 }
 
-func ProcessDiff() []File {
-	stdout := string(diffOutput())
+func ProcessDiff(staged bool) []File {
+	stdout := string(diffOutput(staged))
 
 	filelREG := regexp.MustCompile(`(?m)^diff --git `)
 	chunks := filelREG.Split(stdout, -1)
