@@ -9,6 +9,12 @@ import (
 func main() {
 	fmt.Println("running `git diff` & parsing...")
 
-	files := ProcessDiff(strings.Contains(os.Args[1], "staged"))
+	var files []File
+
+	if len(os.Args) > 1 {
+		files = ProcessDiff(strings.Contains(os.Args[1], "staged"))
+	} else {
+		files = ProcessDiff(false)
+	}
 	GUI(files)
 }
